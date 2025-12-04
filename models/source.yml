@@ -1,0 +1,46 @@
+version: 2
+
+sources:
+  - name: raw_walmart
+    database: walmart_db  # Update with your Snowflake database name
+    schema: bronze  # Update with your raw schema name
+    tables:
+      - name: department
+        description: "Raw department sales data from Walmart"
+        columns:
+          - name: Store
+            description: "Store ID"
+          - name: Dept
+            description: "Department ID"
+          - name: Date
+            description: "Sales date"
+          - name: Weekly_Sales
+            description: "Weekly sales amount"
+          - name: IsHoliday
+            description: "Holiday indicator"
+      
+      - name: fact
+        description: "Raw store facts data including temperature, fuel price, and markdowns"
+        columns:
+          - name: Store
+            description: "Store ID"
+          - name: Date
+            description: "Date of observation"
+          - name: Temperature
+            description: "Store temperature"
+          - name: Fuel_Price
+            description: "Fuel price in the region"
+          - name: CPI
+            description: "Consumer Price Index"
+          - name: Unemployment
+            description: "Unemployment rate"
+      
+      - name: stores
+        description: "Raw store dimension data"
+        columns:
+          - name: Store
+            description: "Store ID"
+          - name: Type
+            description: "Store type (A, B, or C)"
+          - name: Size
+            description: "Store size in square feet"

@@ -1,0 +1,92 @@
+version: 2
+
+models:
+  - name: walmart_date_dim
+    description: "Date dimension table for Walmart sales analysis"
+    columns:
+      - name: Date_id
+        description: "Surrogate key for date"
+        tests:
+          - unique
+          - not_null
+      - name: Store_Date
+        description: "Calendar date"
+        tests:
+          - not_null
+      - name: IsHoliday
+        description: "Indicates if the date is a holiday"
+      - name: Insert_date
+        description: "Timestamp when record was inserted"
+      - name: Update_date
+        description: "Timestamp when record was last updated"
+
+  - name: walmart_store_dim
+    description: "Store and department dimension table"
+    columns:
+      - name: Store_id
+        description: "Store identifier"
+        tests:
+          - not_null
+      - name: Dept_id
+        description: "Department identifier"
+        tests:
+          - not_null
+      - name: Store_type
+        description: "Type of store (A, B, or C)"
+      - name: Store_size
+        description: "Size of store in square feet"
+      - name: Insert_date
+        description: "Timestamp when record was inserted"
+      - name: Update_date
+        description: "Timestamp when record was last updated"
+    tests:
+      - unique:
+          column_name: "(Store_id || '-' || Dept_id)"
+
+  - name: walmart_fact_table
+    description: "Fact table containing sales and operational metrics with SCD2"
+    columns:
+      - name: Store_id
+        description: "Foreign key to store dimension"
+        tests:
+          - not_null
+      - name: Dept_id
+        description: "Foreign key to department"
+        tests:
+          - not_null
+      - name: Date_id
+        description: "Foreign key to date dimension"
+        tests:
+          - not_null
+      - name: Store_Weekly_sales
+        description: "Weekly sales amount"
+      - name: Fuel_Price
+        description: "Fuel price in the region"
+      - name: Store_Temperature
+        description: "Average temperature at the store"
+      - name: Unemployment
+        description: "Unemployment rate"
+      - name: CPI
+        description: "Consumer Price Index"
+      - name: MarkDown1
+        description: "Markdown 1 amount"
+      - name: MarkDown2
+        description: "Markdown 2 amount"
+      - name: MarkDown3
+        description: "Markdown 3 amount"
+      - name: MarkDown4
+        description: "Markdown 4 amount"
+      - name: MarkDown5
+        description: "Markdown 5 amount"
+      - name: Vrsn_start_date
+        description: "Version start timestamp"
+        tests:
+          - not_null
+      - name: Vrsn_end_date
+        description: "Version end timestamp"
+        tests:
+          - not_null
+      - name: Insert_date
+        description: "Record insertion timestamp"
+      - name: Update_date
+        description: "Record update timestamp"
