@@ -1,0 +1,75 @@
+version: 2
+
+models:
+  - name: walmart_fact_table
+    description: >
+      Fact table with SCD2 versioning. Tracks historical changes for each store_id + dept_id combination.
+      Sources from walmart_fact_snapshot (dbt snapshot).
+      Only ONE active row (is_current=true) exists per store_id + dept_id.
+    columns:
+      - name: store_id
+        description: "Foreign key to store dimension"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('walmart_store_dim')
+              field: store_id
+      - name: dept_id
+        description: "Foreign key to department in store dimension"
+        tests:
+          - not_null
+      - name: date_id
+        description: "Foreign key to date dimension"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('walmart_date_dim')
+              field: date_id
+      - name: weekly_sales
+        description: "Weekly sales amount for this store-department"
+      - name: fuel_price
+        description: "Fuel price in the region"
+      - name: store_temperature
+        description: "Average temperature at the store"
+      - name: unemployment
+        description: "Unemployment rate"
+      - name: cpi
+        description: "Consumer Price Index"
+      - name: markdown1
+        description: "Markdown 1 amount"
+      - name: markdown2
+        description: "Markdown 2 amount"
+      - name: markdown3
+        description: "Markdown 3 amount"
+      - name: markdown4
+        description: "Markdown 4 amount"
+      - name: markdown5
+        description: "Markdown 5 amount"
+      - name: vrsn_start_date
+        description: "SCD2: Timestamp when this version became active"
+        tests:
+          - not_null
+      - name: vrsn_end_date
+        description: "SCD2: Timestamp when this version was superseded (9999-12-31 if current)"
+        tests:
+          - not_null
+      - name: is_current
+        description: "SCD2: Flag indicating if this is the current active version"
+        tests:
+          - not_null
+          - accepted_values:
+              values: [true, false]
+      - name: row_version_id
+        description: "Unique identifier for this version row (from dbt_scd_id)"
+        tests:
+          - unique
+          - not_null
+      - name: dbt_last_updated
+        description: "Timestamp of last dbt snapshot update"
+    tests:
+      # SCD2 Test: Only one active record per store_id + dept_id
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - store_id
+            - dept_id
+          where: "is_current = true"

@@ -1,0 +1,75 @@
+version: 2
+
+models:
+  - name: walmart_date_dim
+    description: "Date dimension table with SCD1 (upsert) logic. Updates is_holiday and update_date on change."
+    columns:
+      - name: date_id
+        description: "Surrogate key for date dimension"
+        tests:
+          - unique
+          - not_null
+      - name: store_date
+        description: "Calendar date"
+        tests:
+          - not_null
+          - unique
+      - name: is_holiday
+        description: "Indicates if the date is a holiday (TRUE/FALSE)"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['TRUE', 'FALSE']
+      - name: year
+        description: "Year extracted from date"
+      - name: month
+        description: "Month extracted from date"
+      - name: day
+        description: "Day of month extracted from date"
+      - name: day_of_week
+        description: "Day of week (0=Sunday, 6=Saturday)"
+      - name: week_of_year
+        description: "Week number within the year"
+      - name: quarter
+        description: "Quarter of the year (1-4)"
+      - name: insert_date
+        description: "Timestamp when record was first inserted"
+        tests:
+          - not_null
+      - name: update_date
+        description: "Timestamp when record was last updated (SCD1)"
+        tests:
+          - not_null
+
+  - name: walmart_store_dim
+    description: "Store-Department dimension table with SCD1 (upsert) logic. Composite key on store_id + dept_id."
+    columns:
+      - name: store_id
+        description: "Store identifier"
+        tests:
+          - not_null
+      - name: dept_id
+        description: "Department identifier"
+        tests:
+          - not_null
+      - name: store_type
+        description: "Type of store (A, B, or C)"
+        tests:
+          - accepted_values:
+              values: ['A', 'B', 'C']
+      - name: store_size
+        description: "Size of store in square feet"
+      - name: insert_date
+        description: "Timestamp when record was first inserted"
+        tests:
+          - not_null
+      - name: update_date
+        description: "Timestamp when record was last updated (SCD1)"
+        tests:
+          - not_null
+    tests:
+      # Composite unique key test for SCD1
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - store_id
+            - dept_id

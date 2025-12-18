@@ -1,0 +1,54 @@
+version: 2
+
+snapshots:
+  - name: walmart_fact_snapshot
+    description: >
+      SCD2 snapshot for Walmart fact data. Tracks historical changes for each store_id + dept_id combination.
+      Strategy: check - monitors all measure columns for changes.
+      When data changes: closes existing record (sets dbt_valid_to) and inserts new version.
+    columns:
+      - name: store_id
+        description: "Store identifier (part of composite unique key)"
+        tests:
+          - not_null
+      - name: dept_id
+        description: "Department identifier (part of composite unique key)"
+        tests:
+          - not_null
+      - name: date_id
+        description: "Surrogate key for date"
+        tests:
+          - not_null
+      - name: weekly_sales
+        description: "Weekly sales amount (tracked for changes)"
+      - name: fuel_price
+        description: "Fuel price (tracked for changes)"
+      - name: store_temperature
+        description: "Store temperature (tracked for changes)"
+      - name: unemployment
+        description: "Unemployment rate (tracked for changes)"
+      - name: cpi
+        description: "Consumer Price Index (tracked for changes)"
+      - name: markdown1
+        description: "Markdown 1 (tracked for changes)"
+      - name: markdown2
+        description: "Markdown 2 (tracked for changes)"
+      - name: markdown3
+        description: "Markdown 3 (tracked for changes)"
+      - name: markdown4
+        description: "Markdown 4 (tracked for changes)"
+      - name: markdown5
+        description: "Markdown 5 (tracked for changes)"
+      - name: dbt_scd_id
+        description: "dbt snapshot: unique identifier for each version"
+        tests:
+          - unique
+          - not_null
+      - name: dbt_valid_from
+        description: "dbt snapshot: when this version became active"
+        tests:
+          - not_null
+      - name: dbt_valid_to
+        description: "dbt snapshot: when this version was superseded (NULL if current)"
+      - name: dbt_updated_at
+        description: "dbt snapshot: last update timestamp"

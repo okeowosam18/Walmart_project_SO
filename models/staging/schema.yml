@@ -1,0 +1,65 @@
+version: 2
+
+models:
+  - name: stg_departments
+    description: "Staging model for department sales data"
+    columns:
+      - name: store
+        description: "Store ID"
+        tests:
+          - not_null
+      - name: dept
+        description: "Department ID"
+        tests:
+          - not_null
+      - name: store_date
+        description: "Sales date"
+        tests:
+          - not_null
+      - name: weekly_sales
+        description: "Weekly sales amount"
+      - name: isholiday
+        description: "Holiday indicator (TRUE/FALSE)"
+
+  - name: stg_facts
+    description: "Staging model for store facts including temperature, fuel price, and markdowns"
+    columns:
+      - name: store
+        description: "Store ID"
+        tests:
+          - not_null
+      - name: store_date
+        description: "Date of observation"
+        tests:
+          - not_null
+      - name: store_temperature
+        description: "Store temperature"
+      - name: fuel_price
+        description: "Fuel price in the region"
+      - name: markdown1
+        description: "Markdown 1 amount"
+      - name: markdown2
+        description: "Markdown 2 amount"
+      - name: markdown3
+        description: "Markdown 3 amount"
+      - name: markdown4
+        description: "Markdown 4 amount"
+      - name: markdown5
+        description: "Markdown 5 amount"
+      - name: cpi
+        description: "Consumer Price Index"
+      - name: unemployment
+        description: "Unemployment rate"
+
+  - name: stg_stores
+    description: "Staging model for store dimension data"
+    columns:
+      - name: store
+        description: "Store ID"
+        tests:
+          - not_null
+          - unique
+      - name: store_type
+        description: "Store type (A, B, or C)"
+      - name: store_size
+        description: "Store size in square feet"
